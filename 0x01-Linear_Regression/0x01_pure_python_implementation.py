@@ -25,3 +25,22 @@ class LinearRegression:
             for j in range(cols):
                 transposed[j][i] = matrix[i][j]
         return transposed
+    
+    def _multiply_matrices(self, matrix1, matrix2):
+        """
+        Multiplies two matrices.
+        """
+        rows1 = len(matrix1)
+        cols1 = len(matrix1[0])
+        rows2 = len(matrix2)
+        cols2 = len(matrix2[0])
+        
+        if cols1 != rows2:
+            raise ValueError("Matrix dimensions are incopatible for multiplication.")
+        
+        result = [[0 for _ in range(cols2)] for _ in range(rows2)]
+        for i in range(rows1):
+            for j in range(cols2):
+                for k in range(cols1):
+                    result[i][j] += matrix1[i][k] * matrix2[k][j]
+        return result
