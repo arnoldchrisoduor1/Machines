@@ -44,3 +44,28 @@ class LinearRegression:
                 for k in range(cols1):
                     result[i][j] += matrix1[i][k] * matrix2[k][j]
         return result
+    
+    def _inverse_matrix(self, matrix):
+        """
+        Calculates the inverse of a (2x2) matrix.
+        This will work for single feature linear regression.
+        For higher dimensions we might need robust inverse calculations e.g (Gaussian elimination)
+        """
+        rows = len(matrix)
+        cols = len(matrix[0])
+        
+        if rows != cols:
+            raise ValueError("Cannot invert a non-square matrix")
+        if rows == 1:
+            return [[1 / matrix[0][0]]]
+        if rows == 2:
+            a, b = matrix[0][0], matrix[0][1]
+            c, d = matrix[1][0], matrix[1][1]
+            determinant = a * d - b * c
+            if determinant == 0:
+                raise ValueError("Matrix is singular and cannot be inverted.")
+            inv_det = 1 / determinant
+            return [[d * inv_det, -b * inv_det],
+                    [-c * inv_det, a * inv_det]]
+        else: 
+            raise NotImplementedError("Matrix inversion for dimensions > 2x2 not implemented.")
