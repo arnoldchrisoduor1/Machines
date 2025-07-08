@@ -100,3 +100,59 @@ class LinearRegression:
         for i in range(n):
             squared_errors_sum += (y_true[i] - y_pred[i]) ** 2
         return squared_errors_sum / n
+    
+    def _scale_data(self, data, fit_scaler=True, is_target=False):
+        """
+        will apply the min-max scaling to the input data.
+        if fit_scaler is True, it calculates and stores min/max values.
+        If is_target is True, it scales the 1D target Array.
+        """
+        if not data:
+            return []
+        if is_target:
+            # handling the 1D target array.
+            if fit_scaler:
+                self.min_target = data[0]
+                self.max_target = data[0]
+                for val in data:
+                    if val < self.min_target:
+                        self.min_target = val
+                    if val > self.max_target:
+                        self.max_target = val
+            if self.min_target is None or self.max_target is None:
+                raise ValueError("Scaler not fitted for target data. Call with fit_scaler")
+            scaled_data = []
+            range_target = self.max_target - self.min_target
+            if range_target == 0: #avoid division by 0.
+                return [0.0] * len(data)
+            for val in data:
+                scaled_data.append((val - self.min_target) / range_target)
+            return scaled_data
+        else:
+            # Handle 2D feature matrix
+            num_features = len(data[0])
+
+            if fit_scaler:
+                self.min_vals = [float('inf')] * num_features
+                self.max_vals = [float('-inf')] * num_features
+                for row in data:
+                    for j in range(num_features):
+                        if row[j] < self.min_vals[j]:
+                            self.min_vals[j] = row[j]
+                        if row[j] > self.max_vals[j]:
+                            self.max_vals[j] = row[j]
+
+            if self.min_vals is None or self.max_vals is None:
+                raise ValueError("Scaler not fitted for feature data. Call with fit_scaler=True first.")
+
+            scaled_data = []
+            for row in data:
+                scaled_row = []
+                for j in range(num_features):
+                    feature_range = self.max_vals[j] - self.min_vals[j]
+                    if feature_range == 0: # Avoid division by zero if all values for a feature are the same
+                        scaled_row.append(0.0)
+                    else:
+                        scaled_row.append((row[j] - self.min_vals[j]) / feature_range)
+                scaled_data.append(scaled_row)
+            return scaled_data
