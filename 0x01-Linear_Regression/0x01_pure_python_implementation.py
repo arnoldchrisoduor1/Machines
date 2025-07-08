@@ -85,3 +85,18 @@ class LinearRegression:
         for i in range(num_samples):
             X_b.append(ones_column[i] + X[i])
         return X_b
+    
+    def _mean_squared_error(self, y_true, y_pred):
+        """
+        calculates mse between true and predicted values.
+        """
+        if len(y_true) != len(y_pred):
+            raise ValueError("True and predicted arrays must have the same length.")
+        n = len(y_true)
+        if n == 0:
+            return 0.0
+        
+        squared_errors_sum = 0
+        for i in range(n):
+            squared_errors_sum += (y_true[i] - y_pred[i]) ** 2
+        return squared_errors_sum / n
