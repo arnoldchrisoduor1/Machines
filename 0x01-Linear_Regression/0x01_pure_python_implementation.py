@@ -69,3 +69,19 @@ class LinearRegression:
                     [-c * inv_det, a * inv_det]]
         else: 
             raise NotImplementedError("Matrix inversion for dimensions > 2x2 not implemented.")
+        
+    def _add_bias_term(self, X):
+        """
+        will add a column of ones to the feature matrix X to account for the bias (X intercept).
+        Necessary for the normal equation where the bias term is treated as a weight,
+        associated with a constant feature of 1.
+        """
+        num_samples = len(X)
+        # creating the columns of ones.
+        ones_column = [[1] for _ in range(num_samples)]
+        
+        # now we concatenate ones_column with X, assuming X is a matrix (list of lists)
+        X_b = []
+        for i in range(num_samples):
+            X_b.append(ones_column[i] + X[i])
+        return X_b
